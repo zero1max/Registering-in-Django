@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth import login, logout
 from django.contrib.auth.views import LoginView
 from django.contrib import messages
+from services.bot import send_msg
 
 
 class RegisterView(CreateView):
@@ -17,6 +18,9 @@ class RegisterView(CreateView):
         context["title"] = 'Register'
         return context
     
+    def form_valid(self, form):
+        send_msg("Registered New User")
+        form.save()
 
 class CustomLoginView(LoginView):
     form_class = UserLoginForm
@@ -24,6 +28,7 @@ class CustomLoginView(LoginView):
     
     def form_valid(self, form):
         user = form.get_user()
+        send_msg("Logined New User")
         login(self.request, user)
         return redirect('home')
     
